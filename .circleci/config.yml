@@ -1,0 +1,26 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+      - run:
+          command: pip install -r requirements-dev.txt
+          name: Install requirements
+      - run:
+          command: make cov
+          name: Run unit tests with coverage
+      - store_artifacts:
+          path: htmlcov
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
